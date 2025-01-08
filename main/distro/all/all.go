@@ -33,7 +33,6 @@ import (
 	// Developer preview features
 	_ "github.com/v2fly/v2ray-core/v5/app/instman"
 	_ "github.com/v2fly/v2ray-core/v5/app/observatory"
-	_ "github.com/v2fly/v2ray-core/v5/app/restfulapi"
 	_ "github.com/v2fly/v2ray-core/v5/app/tun"
 
 	// Inbound and outbound proxies.
@@ -74,7 +73,12 @@ import (
 	_ "github.com/v2fly/v2ray-core/v5/transport/internet/request/assembler/simple"
 	_ "github.com/v2fly/v2ray-core/v5/transport/internet/request/roundtripper/httprt"
 
+	_ "github.com/v2fly/v2ray-core/v5/transport/internet/request/assembler/packetconn"
+
 	_ "github.com/v2fly/v2ray-core/v5/transport/internet/request/stereotype/meek"
+	_ "github.com/v2fly/v2ray-core/v5/transport/internet/request/stereotype/mekya"
+
+	_ "github.com/v2fly/v2ray-core/v5/transport/internet/dtls"
 
 	_ "github.com/v2fly/v2ray-core/v5/transport/internet/httpupgrade"
 
