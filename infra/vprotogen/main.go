@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"go/build"
 	"io"
@@ -92,7 +93,7 @@ Command "%s" not found.
 Make sure that %s is in your system path or current path.
 Download %s v%s or later from https://github.com/protocolbuffers/protobuf/releases
 `, protoc, protoc, protoc, targetedVersion)
-		return "", fmt.Errorf(errStr)
+		return "", fmt.Errorf("%v", errStr)
 	}
 	return path, nil
 }
@@ -107,9 +108,9 @@ func getProjectProtocVersion(url string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("can not read from body")
 	}
-	versionRegexp := regexp.MustCompile(`\/\/\s*protoc\s*v(\d+\.\d+\.\d+)`)
+	versionRegexp := regexp.MustCompile(`\/\/\s*protoc\s*v(\d+\.(\d+\.\d+))`)
 	matched := versionRegexp.FindStringSubmatch(string(body))
-	return matched[1], nil
+	return matched[2], nil
 }
 
 func getInstalledProtocVersion(protocPath string) (string, error) {
@@ -121,16 +122,19 @@ func getInstalledProtocVersion(protocPath string) (string, error) {
 	}
 	versionRegexp := regexp.MustCompile(`protoc\s*(\d+\.\d+(\.\d)*)`)
 	matched := versionRegexp.FindStringSubmatch(string(output))
-	return matched[1], nil
+	installedVersion := ""
+	if len(matched) == 0 {
+		return "", errors.New("can not parse protoc version")
+	}
+	installedVersion += matched[1]
+	fmt.Println("Using protoc version: " + installedVersion)
+	return installedVersion, nil
 }
 
 func parseVersion(s string, width int) int64 {
 	strList := strings.Split(s, ".")
 	format := fmt.Sprintf("%%s%%0%ds", width)
 	v := ""
-	if len(strList) == 2 {
-		strList = append([]string{"4"}, strList...)
-	}
 	for _, value := range strList {
 		v = fmt.Sprintf(format, v, value)
 	}
