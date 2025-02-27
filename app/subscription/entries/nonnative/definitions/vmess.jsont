@@ -25,7 +25,7 @@
     {{end}}
 
 {{ $security_type := tryGet . "root_!link_host_!base64_!json_tls_!unquoted" "root_!json_tls" "<default>"}}
-{{ $security_type = $security_type | unalias "none" "" "false"}}
+{{ $security_type = $security_type | unalias "none" "" "false" "0"}}
 
 {{if assertValueIsOneOf $security_type "tls" "utls" "none"| not }}
     unknown security type {{end}}
@@ -59,8 +59,7 @@
         }
     },
   "metadata":{
-
-    "TagName": {{print $name_annotation "_" $server_address | jsonEncode}}
-
+    "TagName": {{print $name_annotation "_" $server_address | jsonEncode}},
+    "DisplayName": {{print $name_annotation | jsonEncode}}
   }
 }
